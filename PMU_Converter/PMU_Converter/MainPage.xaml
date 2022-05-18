@@ -2,21 +2,72 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:pmu_converter="clr-namespace:PMU_Converter" 
-             x:DataType="pmu_converter:ViewModelMainPage"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             x:DataType="pmu_converter:MainViewModel"
              x:Class="PMU_Converter.MainPage">
+    <StackLayout BackgroundColor="White">
 
-    <StackLayout>
-        <DatePicker Date="{Binding CurrentDate}">
+        <StackLayout>
+            <Frame 
+                xct:ShadowEffect.Color="Black"
+                xct:ShadowEffect.Radius="16"
+                Padding="32, 80">
+
+                <Frame.Background>
+                    <LinearGradientBrush EndPoint="0, 0">
+                        <GradientStop Color="#00d2ff"
+                          Offset="0.0" />
+                        <GradientStop Color="#3a7bd5"
+                          Offset="0.0" />
+                    </LinearGradientBrush>
+                </Frame.Background>
+
+                <StackLayout>
+                    <Picker ItemsSource="{Binding ValutesList}" 
+                            TextColor="White"
+                            SelectedItem="{Binding BaseValute}"
+                            Title="Выберите валюту"
+                            HorizontalTextAlignment="Center"/>
+                    <Entry FontSize="48"
+                           FontAttributes="Bold"
+                           Text="{Binding BaseValue}" 
+                           TextColor="White"
+                           HorizontalTextAlignment="Center"
+                           Keyboard="Numeric"/>
+                </StackLayout>
+            </Frame>
             
-        </DatePicker>
-        <Label Text="{Binding TextCourse}"></Label>
-        <StackLayout Orientation="Horizontal">
-            <Picker></Picker>
-            <Entry></Entry>
+            <Frame          
+                    BackgroundColor="White" 
+                    xct:ShadowEffect.Color="#ababab"
+                    xct:ShadowEffect.Radius="32"
+                    Padding="32, 80">
+                <StackLayout>
+                    <Picker ItemsSource="{Binding ValutesList}"
+                            HorizontalTextAlignment="Center"
+                            TextColor="#3a7bd5"
+                            Title="Выберите валюту"
+                            SelectedItem="{Binding NewValute}"/>
+                    <Entry Text="{Binding NewValue}"
+                           TextColor="#3a7bd5"
+                           FontSize="48"
+                           FontAttributes="Bold"
+                           HorizontalTextAlignment="Center"
+                           IsReadOnly="True"/>
+                </StackLayout>
+            </Frame>
         </StackLayout>
-        <StackLayout Orientation="Horizontal">
-            <Picker></Picker>
-            <Entry></Entry>
+
+        <StackLayout Background="White" 
+                     Padding="0, 16"
+                     VerticalOptions="EndAndExpand">
+            <Label  Text="{Binding TextCourse}"
+                    HorizontalTextAlignment="Center"
+                    FontSize="20"/>
+            <DatePicker Date="{Binding CurrentDate}" 
+                        HorizontalOptions="CenterAndExpand"
+                        
+                        FontSize="32"/>
         </StackLayout>
     </StackLayout>
 
