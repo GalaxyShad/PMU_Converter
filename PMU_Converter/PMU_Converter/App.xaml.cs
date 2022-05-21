@@ -15,10 +15,14 @@ namespace PMU_Converter
 
         protected override void OnStart()
         {
+            var viewModel = MainPage.BindingContext as MainViewModel;
+            viewModel?.LoadState();
         }
 
         protected override void OnSleep()
         {
+            var viewModel = MainPage.BindingContext as MainViewModel;
+            viewModel?.SaveState();
         }
 
         protected override void OnResume()

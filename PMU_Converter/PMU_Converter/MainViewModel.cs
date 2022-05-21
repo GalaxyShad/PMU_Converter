@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace PMU_Converter
@@ -16,7 +17,7 @@ namespace PMU_Converter
         {
             //CurrentDate = DateTime.Now;
             //UpdateValutesData();
-            LoadState();
+            //LoadState();
         }
 
         private async void UpdateValutesData()
@@ -30,6 +31,7 @@ namespace PMU_Converter
             catch (Exception ex)
             {
                 TextCourse = ex.Message;
+                return;
             }
 
             if (valuteData == null)
@@ -45,6 +47,9 @@ namespace PMU_Converter
                     $"{valuteData.Date:yyyy}.";
             }
 
+            var baseValute = BaseValute?.CharCode;
+            var newValute = NewValute?.CharCode;
+
             ValutesList.Clear();
             foreach (var valute in valuteData.Valute)
             {
@@ -54,6 +59,16 @@ namespace PMU_Converter
                     Name = valute.Value.Name,
                     Value = valute.Value.Value,
                 });
+            }
+
+            if (string.IsNullOrWhiteSpace(baseValute) == false)
+            {
+                BaseValute = ValutesList.FirstOrDefault(x => x.CharCode == baseValute);
+            }
+
+            if (string.IsNullOrWhiteSpace(newValute) == false)
+            {
+                NewValute = ValutesList.FirstOrDefault(x => x.CharCode == newValute);
             }
 
             SaveState();
@@ -68,9 +83,9 @@ namespace PMU_Converter
             SaveState();
         }
 
-        private void LoadState()
+        public void LoadState()
         {
-            string documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal); 
+            var documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal); 
             var path = Path.Combine(documentsPath, "Data.json");
 
             if (!File.Exists(path))
@@ -80,11 +95,9 @@ namespace PMU_Converter
                 return;
             }
 
-            StreamReader streamReader = new StreamReader(path);
-            string strData = streamReader.ReadToEnd();
-            streamReader.Close();
+            var strData = File.ReadAllText(path);
 
-            var data = JsonConvert.DeserializeObject<StateData>(strData);
+            var data = JsonConvert.DeserializeObject<MainViewModel>(strData);
             ValutesList = data.ValutesList;
             BaseValue = data.BaseValue;
             NewValue = data.NewValue;
@@ -93,26 +106,14 @@ namespace PMU_Converter
             TextCourse = data.TextCourse;
         }
 
-        private void SaveState()
+        public void SaveState()
         {
-            string documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+            var documentsPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
             var path = Path.Combine(documentsPath, "Data.json");
 
-            string strData = JsonConvert.SerializeObject(this, Formatting.Indented);
+            var strData = JsonConvert.SerializeObject(this, Formatting.Indented);
 
-            StreamWriter streamWriter = new StreamWriter(path);
-            streamWriter.WriteLine(strData);
-            streamWriter.Close();
-        }
-
-        public class StateData
-        {
-            public ValutesListElement BaseValute { get; set; }
-            public ValutesListElement NewValute { get; set; }
-            public string BaseValue { get; set; }
-            public string NewValue { get; set; }
-            public ObservableCollection<ValutesListElement> ValutesList { get; set; }
-            public string TextCourse { get; set; }
+            File.WriteAllText(path, strData);
         }
 
         public class ValutesListElement
