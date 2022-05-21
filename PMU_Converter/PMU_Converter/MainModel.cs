@@ -35,7 +35,7 @@ namespace PMU_Converter
             {
                 try
                 {
-                    valutes = await $"{apiUrl}/archive/{date:yyyy}/{date:MM}/{date:dd}/daily_json.js".
+                    valutes = await $"{apiUrl}/archive/{date:yyyy/MM/dd}/daily_json.js".
                         GetJsonAsync<ValuteData>();
                 }
                 catch (FlurlHttpException ex)
